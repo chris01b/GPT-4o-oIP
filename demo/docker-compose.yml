@@ -2,7 +2,7 @@ name: demo
 
 services:
   tele:
-    image: chris01b/gpt-4o-oip
+    image: chris01b/gpt-4o-oip:full
     network_mode: bridge                    # Only here to help testing
     cap_add:
       - sys_ptrace                          # Only here to help testing

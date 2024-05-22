@@ -112,7 +112,6 @@ RUN	apk --no-cache --update add \
 	"syslogd -nO- -l$SYSLOG_LEVEL $SYSLOG_OPTIONS" \
 	"crond -f -c /etc/crontabs" \
 	"-q asterisk -pf" \
-	# "-n websmsd php -S 0.0.0.0:$WEBSMSD_PORT -t $DOCKER_PHP_DIR websmsd.php" \
 	"$DOCKER_PHP_DIR/autoband.php" \
 	&& mkdir -p /var/spool/asterisk/staging
 

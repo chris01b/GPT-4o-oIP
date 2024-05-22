@@ -8,7 +8,7 @@
 BLD_ARG  ?= --build-arg DIST=alpine --build-arg REL=3.19 --build-arg PHP_VER=php82
 BLD_REPO ?= chris01b/gpt-4o-oip
 BLD_VER  ?= latest
-BLD_TGT  ?= base
+BLD_TGT  ?= full
 BLD_TGTS ?= mini base full xtra
 BLD_CMT  ?= HEAD
 BLD_CVER ?= ast200
