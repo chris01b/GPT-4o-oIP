@@ -25,12 +25,12 @@ The configuration files making up PrivateDial are tabulated below.
 | File name             | Description                                                  |
 | --------------------- | ------------------------------------------------------------ |
 | extensions.conf       | The dial plan, defining the data flow of calls and messages  |
-<!-- | extensions_local.conf | Use case specific global variables used in extensions.conf   | -->
-<!-- | minivm.conf           | Define mail sever URL and authentication credentials which voice mail email notifications will be sent | -->
 | pjsip.conf            | Use case specific global variables used by the PJSIP driver  |
 | pjsip_transport.conf  | Defines SIP transport, protocol, port, host URL              |
 | pjsip_wizard.conf     | Defines templates for sip trunk and soft-phone endpoints     |
 | pjsip_endpoint.conf   | Defines sip trunk and soft-phone endpoints                   |
+<!-- | extensions_local.conf | Use case specific global variables used in extensions.conf   | -->
+<!-- | minivm.conf           | Define mail sever URL and authentication credentials which voice mail email notifications will be sent | -->
 
 When configuring the asterisk sever the following files often needs to be updated: `pjsip_transport.conf`. The remaining task is, once the severer has been configured, to add and maintain sip trunk and soft-phone endpoints, which is kept in `pjsip_endpoint.conf`.
 
