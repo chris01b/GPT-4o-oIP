@@ -54,6 +54,10 @@ COPY	src/*/nft $DOCKER_SEED_NFT_DIR/
 # Facilitate persistent storage and install asterisk
 #
 
+RUN	apk --no-cache --update add bash
+
+SHELL ["/bin/bash", "-c"]
+
 RUN	source docker-common.sh \
 	&& source docker-config.sh \
 	&& dc_persist_dirs \
@@ -105,7 +109,7 @@ RUN	apk --no-cache --update add \
 	nftables \
 	jq \
 	&& ln -sf /usr/bin/$PHP_VER /usr/bin/php \
-	&& docker-service.sh \
+	&& /usr/local/bin/docker-service.sh \
 	"syslogd -nO- -l$SYSLOG_LEVEL $SYSLOG_OPTIONS" \
 	"crond -f -c /etc/crontabs" \
 	"-q asterisk -pf" \

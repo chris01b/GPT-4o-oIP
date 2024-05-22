@@ -1,0 +1,2 @@
+# Ensure LF line endings for files copied to the container
+src/** text eol=lf

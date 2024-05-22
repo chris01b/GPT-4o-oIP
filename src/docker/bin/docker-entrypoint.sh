@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 # set -x
 #
 # This script need to run as PID 1 allowing it to receive signals from docker
