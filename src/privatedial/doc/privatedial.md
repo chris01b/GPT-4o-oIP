@@ -1,20 +1,17 @@
 # PrivateDial
 
-PrivateDial is a suite of [Asterisk configuration files](https://wiki.asterisk.org/wiki/display/AST/Asterisk+Configuration+Files). This configuration is tailored to residential use cases, supporting the capabilities of mobile smart phones, that is, voice, video, instant messaging or SMS, and voice mail delivered by email.
+PrivateDial is a suite of [Asterisk configuration files](https://wiki.asterisk.org/wiki/display/AST/Asterisk+Configuration+Files). This configuration is tailored to using GPT-4o as personal phone agent.
 
 It uses the [PJSIP](https://www.pjsip.org/) [channel driver](https://wiki.asterisk.org/wiki/display/AST/Configuring+res_pjsip) and therefore natively support simultaneous connection of several soft-phones to each user account/endpoint.
 
-The underlying design idea is to separate the dial plan functionality from the user data. To achieve this all user specific data has been pushed out from the main `extensions.conf` file.
+<!-- The underlying design idea is to separate the dial plan functionality from the user data. To achieve this all user specific data has been pushed out from the main `extensions.conf` file. -->
 
 ## Features
 
 Feature list follows below
 
-- Calls and SMS between local endpoints.
 - ITSP originating (incoming) SIP voice calls.
 - ITSP termination (outgoing) SIP voice call.
-- WebSMS; SMS to and from ITSP.
-- [MiniVoiceMail](https://wiki.asterisk.org/wiki/display/AST/Asterisk+16+Application_MinivmRecord)
 
 
 ## Configuration files
@@ -28,14 +25,14 @@ The configuration files making up PrivateDial are tabulated below.
 | File name             | Description                                                  |
 | --------------------- | ------------------------------------------------------------ |
 | extensions.conf       | The dial plan, defining the data flow of calls and messages  |
-| extensions_local.conf | Use case specific global variables used in extensions.conf   |
-| minivm.conf           | Define mail sever URL and authentication credentials which voice mail email notifications will be sent |
+<!-- | extensions_local.conf | Use case specific global variables used in extensions.conf   | -->
+<!-- | minivm.conf           | Define mail sever URL and authentication credentials which voice mail email notifications will be sent | -->
 | pjsip.conf            | Use case specific global variables used by the PJSIP driver  |
 | pjsip_transport.conf  | Defines SIP transport, protocol, port, host URL              |
 | pjsip_wizard.conf     | Defines templates for sip trunk and soft-phone endpoints     |
 | pjsip_endpoint.conf   | Defines sip trunk and soft-phone endpoints                   |
 
-When configuring the asterisk sever the following files often needs to be updated: `pjsip_transport.conf` and `minivm.conf`. The remaining task is, once the severer has been configured, to add and maintain sip trunk and soft-phone endpoints, which is kept in `pjsip_endpoint.conf`.
+When configuring the asterisk sever the following files often needs to be updated: `pjsip_transport.conf`. The remaining task is, once the severer has been configured, to add and maintain sip trunk and soft-phone endpoints, which is kept in `pjsip_endpoint.conf`.
 
 ## Usage
 
@@ -77,19 +74,6 @@ endpoint/callerid = John Doe <+12025550160>
 endpoint/mailboxes = john.doe@example.com
 inbound_auth/username = john.doe
 inbound_auth/password = password
-```
-
-You also need to configure WebSMS for SMS to work, see separate documentation.
-
-### Outgoing SMTP email server
-
-PrivateDial use [MiniVoiceMail](https://wiki.asterisk.org/wiki/display/AST/Asterisk+16+Application_MinivmRecord) to deliver voice mail messages via email with attached sound files. For this to work a separate SMTP email server need to have been set up. This can for example be achieved by using the image [mlan/postfix-amavis](https://hub.docker.com/repository/docker/mlan/postfix-amavis). With a functional email server, configure MiniVM to connect to it by providing its URL and authentication credentials in `minivm.conf`
-
-`minivm.conf`
-
-```ini
-[general]
-mailcmd = minivm-send -H mx.example.com:587 -P starttls -u username -p password -f voicemail-noreply@example.com
 ```
 
 ### SIP Networking
@@ -157,20 +141,11 @@ The entry contexts are used to grant more access to users calling or texting as 
 ```ini
 [dp_entry_call_inout](+)
 include => dp_lookup
-include => dp_ivr_recgreet
 include => dp_call_inout
 
 [dp_entry_call_in](+)
 include => dp_lookup
 include => dp_call_in
-
-[dp_entry_text_inout](+)
-include => dp_lookup
-include => dp_text_inout
-
-[dp_entry_text_in](+)
-include => dp_lookup
-include => dp_text_in
 
 [dp_entry_answer](+)
 include => dp_lookup
@@ -198,19 +173,6 @@ exten => _[+0-9].,1,NoOp()
 exten => _[+0-9].,1,NoOp()
  same => n,Gosub(sub_dial_term,s,1(${HINT}))
  same => n,Gosub(sub_voicemail,s,1(${HINT}))
- same => n,Hangup()
-
-[dp_text_inout]
-exten => _[+0-9].,1,NoOp()
- same => n,Gosub(sub_rewrite_from,s,1)
- same => n,Gosub(sub_text_term,s,1(${HINT}))
- same => n,Gosub(sub_text_trunk,${EXTEN},1(${HINT}))
- same => n,Hangup()
-
-[dp_text_in]
-exten => _[+0-9].,1,NoOp()
- same => n,Gosub(sub_decode_body,s,1)
- same => n,Gosub(sub_text_term,s,1(${HINT}))
  same => n,Hangup()
 
 [dp_answer]
