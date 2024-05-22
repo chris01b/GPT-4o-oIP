@@ -32,8 +32,7 @@ ENV	PHP_VER=$PHP_VER \
 	DOCKER_SSL_DIR=/etc/ssl \
 	ACME_POSTHOOK="sv restart asterisk" \
 	SYSLOG_LEVEL=4 \
-	SYSLOG_OPTIONS=-SDt \
-	WEBSMSD_PORT=80
+	SYSLOG_OPTIONS=-SDt
 ENV	DOCKER_MOH_DIR=$DOCKER_LIB_DIR/moh \
 	DOCKER_ACME_SSL_DIR=$DOCKER_SSL_DIR/acme \
 	DOCKER_APPL_SSL_DIR=$DOCKER_SSL_DIR/asterisk
@@ -113,7 +112,7 @@ RUN	apk --no-cache --update add \
 	"syslogd -nO- -l$SYSLOG_LEVEL $SYSLOG_OPTIONS" \
 	"crond -f -c /etc/crontabs" \
 	"-q asterisk -pf" \
-	"-n websmsd php -S 0.0.0.0:$WEBSMSD_PORT -t $DOCKER_PHP_DIR websmsd.php" \
+	# "-n websmsd php -S 0.0.0.0:$WEBSMSD_PORT -t $DOCKER_PHP_DIR websmsd.php" \
 	"$DOCKER_PHP_DIR/autoband.php" \
 	&& mkdir -p /var/spool/asterisk/staging
 
