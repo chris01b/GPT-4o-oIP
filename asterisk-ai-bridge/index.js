@@ -4,6 +4,7 @@ import config from 'config';
 import Pino from 'pino';
 import Bridge from './lib/Bridge.js';
 import RtpServer from './lib/RTPServer.js';
+import DialogFlowConnector from './lib/DialogFlowConnector.js';
 
 const log = new Pino({
     name: 'asterisk-ai-bridge',
@@ -13,10 +14,53 @@ const rtpServer = new RtpServer(config.get('rtpServer'), log);
 const mqttTopicPrefix = config.get('mqtt.topicPrefix');
 
 const channels = new Map();
+const connectorsMap = new Map();
 
 let mqttClient;
 
 log.info('Starting');
+
+const createNewGoogleStream = async (payload) => {
+    log.info({ payload }, 'New Stream of audio from Asterisk to send to Dialogflow');
+
+    const dialogFlowConfig = {
+        auth: config.get('dialogflow.auth'),
+        projectId: config.get('dialogflow.project'),
+        sessionId: payload.channelId,
+        initialEventName: config.get('dialogflow.initialEventName'),
+        enableOutputSpeech: config.get('dialogflow.enableOutputSpeech'),
+        asteriskConfig: config.get('asterisk')
+    };
+
+    const dialogflowConnector = new DialogFlowConnector({
+        input: config.get('dialogflow.audioInputConfig'),
+        output: config.get('dialogflow.audioOutputConfig')
+    }, dialogFlowConfig, payload.channelId, log);
+
+    const audioDataStream = rtpServer.createStream(payload.port);
+
+    dialogflowConnector.start(audioDataStream);
+
+    connectorsMap.set(payload.channelId, dialogflowConnector);
+
+    dialogflowConnector.on('message', async (data) => {
+        log.info(`Got a message sending to ${mqttTopicPrefix}/${payload.channelId}/events`);
+        await mqttClient.publish(`${mqttTopicPrefix}/${payload.channelId}/events`, JSON.stringify(data));
+    });
+};
+
+const stopDialogflowStream = (payload) => {
+    log.info({ payload }, 'Ending stream of audio from Asterisk to send to Dialogflow');
+
+    const connector = connectorsMap.get(payload.channelId);
+
+    if (connector) {
+        connector.close();
+        connectorsMap.delete(payload.channelId);
+    }
+
+    rtpServer.endStream(payload.port);
+};
 
 const startARIClient = async () => {
     mqttClient = await mqtt.connectAsync(config.get('mqtt.url'));
@@ -32,10 +76,10 @@ const startARIClient = async () => {
 
         switch (topic) {
             case `${mqttTopicPrefix}/newStream`:
-                // TODO: Create a new stream to DialogFlow
+                createNewGoogleStream(payload);
                 break;
             case `${mqttTopicPrefix}/streamEnded`:
-                // TODO: Stop the stream to DialogFlow
+                stopDialogflowStream(payload);
                 break;
             default:
                 break;

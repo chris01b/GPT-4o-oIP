@@ -21,5 +21,31 @@ module.exports = {
         packetTimestampIncrement: 160,
         rtpPayloadType: 11,
         playback: 'hello-world'  // Just for debugging
+    },
+    dialogflow: {
+        auth: {
+            keyFilename: '',
+        },
+        project: '',
+        initialEventName: '',
+        enableOutputSpeech: true,
+        audioInputConfig: {
+            audioEncoding: 'AUDIO_ENCODING_LINEAR_16',
+            sampleRateHertz: 16000,
+            languageCode: 'en',
+            singleUtterance: false
+        },
+        audioOutputConfig: {
+            audioEncoding: 'OUTPUT_AUDIO_ENCODING_LINEAR_16',
+            sampleRateHertz: 8000,  // Different from input because Asterisk doesn't like 16000hz
+            synthesizeSpeechConfig: {
+                speakingRate: 1,
+                pitch: 5,
+                volumeGainDb: 0,
+                voice: {
+                    ssmlGender: 'SSML_VOICE_GENDER_FEMALE'
+                }
+            }
+        }
     }
 };
