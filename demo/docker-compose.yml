@@ -1,9 +1,12 @@
 name: demo
 
+networks:
+  asterisk_net:
+    driver: bridge
+
 services:
   tele:
     image: chris01b/gpt-4o-oip:full
-    network_mode: bridge                    # Only here to help testing
     cap_add:
       - sys_ptrace                          # Only here to help testing
       - net_admin                           # Allow NFT, used by AutoBan
@@ -23,6 +26,18 @@ services:
       - tele-conf:/srv                      # Persistent storage
       - ./pulse:/run/pulse:rshared          # Use host audio
       - /etc/localtime:/etc/localtime:ro    # Use host timezone
+    networks:
+      - asterisk_net
+  
+  asterisk-AI-bridge:
+    image: node:18.20.2
+    container_name: asterisk-AI-bridge
+    networks:
+      - asterisk_net
+    volumes:
+      - ../asterisk-AI-bridge:/usr/src/app
+    working_dir: /usr/src/app
+    command: ["/bin/sh", "-c", "export RTP_SERVER_HOST=$(hostname -i) && npm install && npm start"]
 
 volumes:
   tele-conf:                                # Persistent storage

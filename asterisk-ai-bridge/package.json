@@ -1,0 +1,38 @@
+{
+    "name": "asterisk-ai-bridge",
+    "version": "0.1.0",
+    "description": "A bridge for Asterisk to handle external media streams",
+    "type": "module",
+    "main": "index.js",
+    "author": "Chris Biddle <biddlechris0@gmail.com>",
+    "license": "MIT",
+    "private": false,
+    "dependencies": {
+        "ari-client": "^2.2.0",
+        "async-mqtt": "^2.4.2",
+        "config": "^3.2.4",
+        "dgram-as-promised": "^3.0.3",
+        "krtp": "^3.0.0",
+        "mqtt": "^3.0.0",
+        "pino": "^5.14.0",
+        "dialogflow": "^1.1.2"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.24.7",
+        "@babel/preset-env": "^7.24.7",
+        "babel-jest": "^29.7.0",
+        "cross-env": "^7.0.3",
+        "jest": "^29.7.0",
+        "nock": "^13.5.4",
+        "pino-pretty": "^3.4.0",
+        "sinon": "^18.0.0",
+        "supertest": "^7.0.0"
+    },
+    "scripts": {
+        "start": "node index.js",
+        "start-pretty": "node index.js | pino-pretty",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage"
+    }
+}
