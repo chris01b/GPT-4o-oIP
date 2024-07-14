@@ -6,7 +6,7 @@ module.exports = {
         appName: 'asterisk-ai-bridge'
     },
     rtpServer: {
-        host: process.env.RTP_SERVER_HOST,
+        host: process.env.RTP_SERVER_HOST, // Because Asterisk's external media channel can't resolve DNS hostname
         port: '7777',
         format: 'slin16',
         swap16: true
@@ -24,10 +24,10 @@ module.exports = {
     },
     dialogflow: {
         auth: {
-            keyFilename: '',
+            keyFilename: '', // Path to DialogFlow service account JSON key file
         },
-        project: '',
-        initialEventName: '',
+        project: '', // DialogFlow GCP project ID
+        initialEventName: '', // Name of the event to trigger the initial intent
         enableOutputSpeech: true,
         audioInputConfig: {
             audioEncoding: 'AUDIO_ENCODING_LINEAR_16',
