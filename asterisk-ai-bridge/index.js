@@ -2,6 +2,7 @@ import ariClient from 'ari-client';
 import mqtt from 'async-mqtt';
 import config from 'config';
 import Pino from 'pino';
+import Bridge from './lib/Bridge.js';
 import RtpServer from './lib/RTPServer.js';
 
 const log = new Pino({
@@ -9,12 +10,50 @@ const log = new Pino({
 });
 
 const rtpServer = new RtpServer(config.get('rtpServer'), log);
+const mqttTopicPrefix = config.get('mqtt.topicPrefix');
 
 const channels = new Map();
 
+let mqttClient;
+
 log.info('Starting');
 
-const startARIClient = async () => {};
+const startARIClient = async () => {
+    mqttClient = await mqtt.connectAsync(config.get('mqtt.url'));
+    log.info('Connected to MQTT');
+
+    await mqttClient.subscribe(`${mqttTopicPrefix}/newStream`);
+    await mqttClient.subscribe(`${mqttTopicPrefix}/streamEnded`);
+    log.info('Subscribed to both newStream & streamEnded topic');
+
+    mqttClient.on('message', (topic, message) => {
+        const payload = JSON.parse(message.toString());
+        log.info({ payload }, `MQTT received message with topic ${topic}`);
+
+        switch (topic) {
+            case `${mqttTopicPrefix}/newStream`:
+                // TODO: Create a new stream to DialogFlow
+                break;
+            case `${mqttTopicPrefix}/streamEnded`:
+                // TODO: Stop the stream to DialogFlow
+                break;
+            default:
+                break;
+        }
+    });
+
+    rtpServer.on('err', (err) => {
+        streamsMap.forEach((stream, key) => {
+            stream.end();
+            streamsMap.delete(key);
+        });
+
+        throw err;
+    });
+
+    rtpServer.bind();
+    log.info('AudioServer listening on UDP port');
+};
 
 const startRTPServer = async () => {
     try {
@@ -58,8 +97,7 @@ const startRTPServer = async () => {
                 await playbackFinished;
             }
 
-            // TODO: Create a new bridge
-            const bridge = null
+            const bridge = new Bridge(client, log);
             channels.set(channel.id, bridge);
 
             bridge.on('empty', async () => {
