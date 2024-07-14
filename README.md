@@ -1,30 +1,46 @@
-# The `mlan/asterisk` repository
+# GPT-4o-oIP
 
-![github action ci](https://img.shields.io/github/actions/workflow/status/mlan/docker-asterisk/testimage.yml?label=build&style=flat-square&logo=github)
-![docker version](https://img.shields.io/docker/v/mlan/asterisk?logo=docker&style=flat-square)
-![image size](https://img.shields.io/docker/image-size/mlan/asterisk/latest.svg?label=size&style=flat-square&logo=docker)
-![docker pulls](https://img.shields.io/docker/pulls/mlan/asterisk.svg?label=pulls&style=flat-square&logo=docker)
-![docker stars](https://img.shields.io/docker/stars/mlan/asterisk.svg?label=stars&style=flat-square&logo=docker)
-![github stars](https://img.shields.io/github/stars/mlan/docker-asterisk.svg?label=stars&style=flat-square&logo=github)
-
-This (non official) repository provides dockerized Asterisk PBX.
+This repository (will) allow you to dial in/out with a multimodal agent of your choice.
 
 ## Features
 
-- [Asterisk](http://www.asterisk.org/) powering IP PBX systems and VoIP gateways
-- [PrivateDial](src/privatedial), customizable Asterisk configuration
-- [WebSMS](src/websms), send and receive messages, SMS, over HTTP
-- [AutoBan](src/autoban), a built in intrusion detection and prevention system
-- Additionally provide the [G.729](https://en.wikipedia.org/wiki/G.729) and [G.723.1](https://en.wikipedia.org/wiki/G.723.1) audio codecs
-- Small image size based on [Alpine Linux](https://alpinelinux.org/)
-- [Demo](#docker-compose-example) based on `docker-compose.yml` and `Makefile` files
-- Automatic integration of [Let’s Encrypt](https://letsencrypt.org/) TLS certificates using the reverse proxy [Traefik](https://docs.traefik.io/)
-- Persistent storage facilitated by configuration and run data being consolidated under `/srv`
-- [Container audio](#container-audio) using the pulse socket of the host
-- Use [runit](http://smarden.org/runit/), providing an init scheme and service supervision
-- Health check
-- Log directed to docker daemon with configurable level
-- Multi-staged build providing the images `mini`, `base`, `full` and `xtra`
+- Asterisk
+  - [Asterisk](http://www.asterisk.org/) powering IP PBX systems and VoIP gateways
+  - [PrivateDial Lite](src/privatedial), customizable Asterisk configuration based on [mlan](https://github.com/mlan)'s [PrivateDial](https://github.com/mlan/docker-asterisk/tree/master/src/privatedial)
+  - [AutoBan](src/autoban), a built in intrusion detection and prevention system
+  - Additionally provide the [G.729](https://en.wikipedia.org/wiki/G.729) and [G.723.1](https://en.wikipedia.org/wiki/G.723.1) audio codecs
+  - Small image size based on [Alpine Linux](https://alpinelinux.org/)
+  - [Demo](#docker-compose-example) based on `docker-compose.yml` and `Makefile` files
+  - Automatic integration of [Let’s Encrypt](https://letsencrypt.org/) TLS certificates using the reverse proxy [Traefik](https://docs.traefik.io/)
+  - Persistent storage facilitated by configuration and run data being consolidated under `/srv`
+  - [Container audio](#container-audio) using the pulse socket of the host
+  - Use [runit](http://smarden.org/runit/), providing an init scheme and service supervision
+  - Health check
+  - Log directed to docker daemon with configurable level
+  - Multi-staged build providing the images `mini`, `base`, `full` and `xtra`
+- AI Agent
+  - [ ] Still waiting on the release of GPT-4o by OpenAI
+  - [ ] Still waiting on the release of Moshi AI by Kyutai
+  - [x] Currently configured to work with [DialogFlow](https://cloud.google.com/dialogflow) ES by Google
+    - Form-based bot builder
+    - ~~One-click telephony integration~~ but you're here to run Asterisk locally, right?
+    - Natural language understanding (NLU) models
+    - Speech recognition and speech synthesis models
+    - [40+ template agents](https://cloud.google.com/dialogflow/es/docs/agents-prebuilt) for building conversations for dining out, hotel booking, navigation, IoT, and more
+    - Integration into popular channels, such as Google Assistant, Slack, Twitter, and others
+    - Performance and custom dashboards
+
+# Usage
+
+WIP: Still configuring
+
+# Asterisk AI Bridge Configuration
+
+WIP: Still configuring
+
+# Asterisk Configuration
+
+There are many things to consider when configuring Asterisk and its components. We discuss some fundamentals here and in the separate documentation for the [add-ons](#add-ons).
 
 ## Tags
 
@@ -33,20 +49,10 @@ is used. In addition to the three number version number you can use two or
 one number versions numbers, which refers to the latest version of the 
 sub series. The tag `latest` references the build based on the latest commit to the repository.
 
-The `mlan/asterisk` repository contains a multi staged built. You select which build using the appropriate tag from `mini`, `base`, `full` and `xtra`. The image with the tag `mini` only contains Asterisk itself.
+The repository contains a multi staged build. You select which build using the appropriate tag from `mini`, `base`, `full` and `xtra`. The image with the tag `mini` only contains Asterisk itself.
 The `base` tag also include support for TLS, logging, WebSMS and AutoBan. `full` adds support for console audio. The `xtra` tag includes all Asterisk packages.
 
  To exemplify the usage of the tags, lets assume that the latest version is `1.0.0`. In this case `latest`, `1.0.0`, `1.0`, `1`, `full`, `full-1.0.0`, `full-1.0` and `full-1` all identify the same image.
-
-# Usage
-
-There are many things to consider when configuring Asterisk and its components. We discuss some fundamentals here and in the separate documentation for the [add-ons](#add-ons).
-
-If you want to test the image right away, probably the best way is to clone the [github](https://github.com/mlan/docker-asterisk) repository and run the demo therein.
-
-```bash
-git clone https://github.com/mlan/docker-asterisk.git
-```
 
 ## Docker compose example
 
@@ -122,7 +128,6 @@ Despite the fact that Asterisk is configured using configuration files, there is
 | HOSTNAME                                  | $(hostname)     | Used to identify the relevant TLS certificates in ACME_FILE. |
 | [TLS_CERTDAYS](#tls_keybits-tls_certdays) | 30              | Self-signed TLS certificate validity duration in days.       |
 | [TLS_KEYBITS](#tls_keybits-tls_certdays)  | 2048            | Self-signed TLS key length in bits.                          |
-| [WEBSMSD_PORT](#websmsd_port)             | 80              | PHP web server port, used by WebSMS. Undefined or non-numeric, will disable the PHP web server. |
 
 ## Configuration files
 
@@ -133,6 +138,8 @@ Some of the configuration files provided does not contain any user specific data
 | File name        | Description                                                  |
 | ---------------- | ------------------------------------------------------------ |
 | alsa.conf        | Open Sound System (ALSA) console driver configuration        |
+| ari.conf         | Asterisk REST Interface configuration for asterisk-ai-bridge |
+| http.conf        | Asterisk Built-in mini-HTTP server configuration for asterisk-ai-bridge |
 | asterisk.conf    | Asterisk global configuration including; debug, run-as-user and directory structure |
 | ccss.conf        | Call Completion Supplementary Services configuration         |
 | cli_aliases.conf | Asterisk Command Line Interface aliases                      |
@@ -144,7 +151,7 @@ Some of the configuration files provided does not contain any user specific data
 | pjproject.conf   | Common pjproject options                                     |
 | rtp.conf         | RTP configuration including port range                       |
 
-The configuration files mentioned above are perhaps not the ones that require the most attention. The configuration files defining key aspects of the Asterisk server — like for instance, the call flow and SIP trunk and phone details — is the concern of the add-on [PrivateDial](#privatedial). Please refer to its separate [documentation](src/privatedial/doc/privatedial.md) for details.
+The configuration files mentioned above are perhaps not the ones that require the most attention. The configuration files defining key aspects of the Asterisk server — like for instance, the call flow and SIP trunk and phone details — is the concern of the add-on [PrivateDial Lite](#privatedial). Please refer to its separate [documentation](src/privatedial/doc/privatedial.md) for details.
 
 ## Persistent storage
 
@@ -160,7 +167,7 @@ docker run -d -v tele-conf:/srv ... mlan/asterisk
 
 ## Seeding procedure
 
-The `mlan/asterisk` image contains sample configuration files placed in a seeding directory. The actual configuration directory is empty. When the container starts, the configuration directory, `etc/asterisk` , is scanned. If it is found to be empty, sample configuration files from the seeding directory are copied to the configuration directory.
+The Asterisk image contains sample configuration files placed in a seeding directory. The actual configuration directory is empty. When the container starts, the configuration directory, `etc/asterisk` , is scanned. If it is found to be empty, sample configuration files from the seeding directory are copied to the configuration directory.
 
 The seeding procedure will leave any existing configuration untouched. If configuration files are found, nothing is copied or modified during start up. Only when `etc/asterisk` is found to be empty, will seeding files be copied. This behavior should keep your conflagration safe also when upgrading to a new version of the `mlan/asterisk` image. Should a new version of the `mlan/asterisk` image come with interesting updates to any sample configuration files, it needs to manually be copied or merged with the present configuration files.
 
@@ -168,42 +175,14 @@ The seeding procedure will leave any existing configuration untouched. If config
 
 The level of output for logging is in the range of 0 to 8. 1 means emergency logging only, 2 for alert messages, 3 for critical messages only, 4 for error or worse, 5 for warning or worse, 6 for notice or worse, 7 for info or worse, 8 debug. Default: `SYSLOG_LEVEL=4`
 
-# Add-ons
-
-The `mlan/asterisk` repository contains add-ons that utilizes and extends the already impressive capabilities of Asterisk.
-
-## [PrivateDial](src/privatedial)
-
-PrivateDial is a suite of [Asterisk configuration files](https://wiki.asterisk.org/wiki/display/AST/Asterisk+Configuration+Files). This configuration is tailored to residential use cases, supporting the capabilities of mobile smart phones, that is, voice, video, instant messaging or SMS, and voice mail delivered by email.
-
-It uses the [PJSIP](https://www.pjsip.org/) [channel driver](https://wiki.asterisk.org/wiki/display/AST/Configuring+res_pjsip) and therefore natively support simultaneous connection of several soft-phones to each user account/endpoint.
-
-The underlying design idea is to separate the dial plan functionality from the user data. To achieve this all user specific data has been pushed out from the main `extensions.conf` file.
-
-## [AutoBan](src/autoban)
-
-AutoBan is an intrusion detection and prevention system which is built-in the `mlan/asterisk` image. The intrusion detection is achieved by Asterisk itself. Asterisk generates security events which AutoBan listens to on the AMI interface. 
-
-When security events occurs AutoBan start to monitor the source IP address. Should repeated security events occur intrusion prevention is activated. Intrusion prevention is achieved by AutoBan asking the Linux kernel firewall [nftables](https://netfilter.org/projects/nftables/) to drop packages from offending source IP addresses.
-
-## [WebSMS](src/websms)
-
-Asterisk supports SMS to be sent and received using the extended SIP method; MESSAGE, natively. Still many [Internet Telephony Service Providers](https://wikipedia.org/wiki/Internet_telephony_service_provider) (ITSP) does not support this method, but instead used a web [API](https://en.wikipedia.org/wiki/Application_programming_interface) based on [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) requests. This leaves your Asterisk server without a mechanisms to exchange SMS externally.
-
-The WebSMS service bridges this limitation, with the help of two components. The first, `websmsd`, which waits for incoming SMS to be sent from your ITSP and once received, forwards it to Asterisk. The second, `websms`, is used by Asterisk to send outgoing SMS to your ITSP.
-
-#### `WEBSMSD_PORT`
-
-WebSMS uses PHP's integrated web server. The environment variable `WEBSMSD_PORT=80` determinate which port the web server listens to. If `WEBSMSD_PORT` is undefined or non-numeric the PHP web server is disabled, and consequently, WebSMS too. Disabling the web server might be desired in scenarios when the container runs in host mode and there are concerns with port number clashes with other services running on the host.
-
-# Networking
+## Networking
 SIP networking is quite complex and there is many things that can go wrong. We try to offer some guidance by discussing some fundamentals here.
 
-## SIP protocol
+### SIP protocol
 
 The [Session Initiation Protocol (SIP)](https://en.wikipedia.org/wiki/Session_Initiation_Protocol) is a [signaling protocol](https://en.wikipedia.org/wiki/Signaling_protocol) used for initiating, maintaining, and terminating real-time sessions that include voice, video and messaging applications.
 
-### Transports, UDP, TCP and TLS
+#### Transports, UDP, TCP and TLS
 
 SIP is designed to be independent of the underlying [transport layer](https://en.wikipedia.org/wiki/Transport_layer) protocol, and can be used with the [User Datagram Protocol](https://en.wikipedia.org/wiki/User_Datagram_Protocol) (UDP), the [Transmission Control Protocol](https://en.wikipedia.org/wiki/Transmission_Control_Protocol) (TCP), and the [Stream Control Transmission Protocol](https://en.wikipedia.org/wiki/Stream_Control_Transmission_Protocol) (SCTP). For secure transmissions of SIP messages over insecure network links, the protocol may be encrypted with [Transport Layer Security](https://en.wikipedia.org/wiki/Transport_Layer_Security) (TLS). For the transmission of media streams (voice, video) the [Session Description Protocol](https://en.wikipedia.org/wiki/Session_Description_Protocol) (SDP) payload carried in SIP messages typically employs the [Real-time Transport Protocol](https://en.wikipedia.org/wiki/Real-time_Transport_Protocol) (RTP) or the [Secure Real-time Transport Protocol](https://en.wikipedia.org/wiki/Secure_Real-time_Transport_Protocol) (SRTP).
 
@@ -215,13 +194,13 @@ TLS, operating as an application protocol layered directly over TCP, protects ag
 
 The media streams which are separate connections from the signaling stream, may be encrypted with the [Secure Real-time Transport Protocol](https://en.wikipedia.org/wiki/Secure_Real-time_Transport_Protocol) (SRTP). The key exchange for SRTP is performed with [SDES](https://en.wikipedia.org/wiki/SDES), or with [DTSL](https://en.wikipedia.org/wiki/Datagram_Transport_Layer_Security).
 
-### Ports, 5060, 5061 and 10000-20000
+#### Ports, 5060, 5061 and 10000-10099
 
 SIP traffic typically use the [port numbers](https://en.wikipedia.org/wiki/Port_number) 5060 or 5061. Port 5060 is commonly used for non-encrypted signaling traffic, i.e., TCP or UDP, whereas port 5061 is used for encrypted, TLS, traffic.
 
-RTP uses a dynamic port range generally between 10000-20000. This range can usually be customized on the client to suit differing firewall configurations or other concerns.
+RTP uses a dynamic port range generally between 10000-20000. This range is customized on the client to suit a [fast docker initialization](https://github.com/moby/moby/issues/14288).
 
-## Docker, iptables and docker-proxy
+### Docker, iptables and docker-proxy
 
 When publishing ports on a docker container, using the default `bridge` networking, two things happen; routing rules are updated in the Linux kernel firewall and a proxy processes are stated. The current networking implementation in docker (19.03.8), built on the aged [iptables](https://en.wikipedia.org/wiki/Iptables) and docker-proxy, cannot publish port *ranges*, but instead publish them one by one. 
 
@@ -237,11 +216,11 @@ rtpstart = 10000
 rtpend   = 10099
 ```
 
-## Network address translation (NAT)
+### Network address translation (NAT)
 
 [Network address translation (NAT)](https://en.wikipedia.org/wiki/Network_address_translation) is a method of remapping one IP [address space](https://en.wikipedia.org/wiki/Address_space) into another by modifying the [network address](https://en.wikipedia.org/wiki/Network_address) information in the [IP header](https://en.wikipedia.org/wiki/IP_header) of packets while they are in transit across a traffic [routing device](https://en.wikipedia.org/wiki/Router_(computing)). Network environments often results in NAT being used. On the one hand, the SIP server we deploy using `mlan/asterisk` often uses a Docker [bridge network](https://docs.docker.com/network/bridge/), connecting Dockers local network with the one the host is connected to. On the other, SIP clients running on mobile phones often end up connect to remote local networks.
 
-### SIP server address
+#### SIP server address
 
 To provide SIP clients with the external network address of a server behind NAT it can explicitly be defined on the transport used which is configured in `pjsip_transport.conf`
 
@@ -254,7 +233,7 @@ external_signaling_address = sip.example.com
 external_media_address = sip.example.com
 ```
 
-### SIP client contact rewrite
+#### SIP client contact rewrite
 
 For endpoints connected to remote local networks you need the following parameters which are defined in `pjsip_wizard.conf`
 
@@ -266,7 +245,7 @@ endpoint/rtp_symmetric = yes
 endpoint/bind_rtp_to_media_address = yes
 ```
 
-### Strict RTP protection
+#### Strict RTP protection
 
 Strict RTP learning is not compatible with NAT. When enabled, RTP media packets that have passed NAT will be dropped, resulting in an one way audio experience. Disable strict RTP learning in `rtp.conf`
 
@@ -275,27 +254,27 @@ Strict RTP learning is not compatible with NAT. When enabled, RTP media packets 
 strictrtp = no
 ```
 
-### ICE, STUN, and TURN
+#### ICE, STUN, and TURN
 
 Sometimes there is a need for other more elaborate NAT traversal methods; [ICE, STUN or TURN](https://wiki.asterisk.org/wiki/display/~jcolp/ICE,+STUN,+and+TURN+Support). A treatment of these is a little bit out of scope for this text.
 
-## Security - Privacy and integrity
+### Security - Privacy and integrity
 
 [Transport Layer Security](http://en.wikipedia.org/wiki/Transport_Layer_Security) (TLS) provides encryption for call signaling. A excellent guide for setting up TLS between Asterisk and a SIP client, involving creating key files, modifying Asterisk's SIP configuration to enable TLS, creating a SIP endpoint/user that's capable of TLS, and modifying the SIP client to connect to Asterisk over TLS, can be found here [Secure Calling Tutorial](https://wiki.asterisk.org/wiki/display/AST/Secure+Calling+Tutorial).
 
 The PrivateDial configuration is already set up to provide both UDP and TCP transport. TLS, SDES and DTSL SRTP are also prepared, but a [TLS/SSL server certificate](https://en.wikipedia.org/wiki/Public_key_certificate) and key are needed for their activation. If the certificate and key do not exist when the container starts a [self-signed certificate](https://en.wikipedia.org/wiki/Self-signed_certificate) and private key will automatically be generated.
 
-#### `TLS_KEYBITS`, `TLS_CERTDAYS`
+##### `TLS_KEYBITS`, `TLS_CERTDAYS`
 
 The private key length and self-signed certificate validity duration can be configured using the environment variables: `TLS_KEYBITS=2048` and `TLS_CERTDAYS=30`.
 
-### Let’s Encrypt TLS certificates using Traefik
+#### Let’s Encrypt TLS certificates using Traefik
 
 [Let’s Encrypt](https://letsencrypt.org/) provide free, automated, authorized certificates when you can demonstrate control over your domain. Automatic Certificate Management Environment (ACME) is the protocol used for such demonstration.
 
 There are many agents and applications that supports ACME, e.g., [certbot](https://certbot.eff.org/). The reverse proxy [Traefik](https://docs.traefik.io/) also supports ACME. `mlan/asterisk` can use the TLS certificates Traefik has acquired.
 
-#### `ACME_FILE`, `ACME_POSTHOOK`
+##### `ACME_FILE`, `ACME_POSTHOOK`
 
 The `mlan/asterisk` image looks for the file `ACME_FILE=/acme/acme.json` at container startup. If it is found certificates within this file are extracted. If the host or domain name of one of those certificates matches `HOSTNAME=$(hostname)` or `DOMAIN=${HOSTNAME#*.}` it will be used by the TLS transport. Moreover, the `ACME_FILE` will be monitored and should it change the certificates will be exported anew. So when Traefik renews its certificates Asterisk will automatically also have access to the new certificate.
 
@@ -309,26 +288,26 @@ docker run -d -v proxy-acme:/acme:ro mlan/asterisk
 
 Note, if the target certificate Common Name (CN) or Subject Alternate Name (SAN) is changed the container needs to be restarted.
 
-## Security - Intrusion prevention
+### Security - Intrusion prevention
 
 Attempts by attackers to crack SIP passwords and hijack SIP accounts are very common. Most likely the server will have to fend off thousands of attempts every day. here we mention three means to improve intrusion prevention; obscurity by using non-standard ports, SIP passwords strength, and [AutoBan](src/autoban); an Intrusion Detection and Prevention System.
 
-### Obscurity by using non-standard ports
+#### Obscurity by using non-standard ports
 
 When using non-standard ports the amount of attacks drop significantly, so it might be considered whenever practical. When changing port numbers they need to be updated both for docker and asterisk. To exemplify, assume we want to use 5560 for UDP and TCP and 5561 for TLS, in which case we update the configuration in two places:
 
 - docker or docker compose, e.g., `docker run -p "5560-5561:5560-5561" -p "5560:5560/udp" …`
 - asterisk transport in `pjsip_transport.conf` (`pjsip.conf`), e.g. `bind = 0.0.0.0:5560` and `bind = 0.0.0.0:5561`
 
-### SIP passwords strength
+#### SIP passwords strength
 
 It’s recommended that the minimum strength of a password used in a SIP digests are at least 8 characters long, preferably 10 characters, and have characters that include lower and upper case alphabetic, a number and a non-alphabetic, non-numeric ASCII character, see [SIP Password Security - How much is yours worth?](https://www.sipsorcery.com/mainsite/Help/SIPPasswordSecurity)
 
-## Codec modules
+### Codec modules
 
 Asterisk natively provides several audio and video [codec modules](https://wiki.asterisk.org/wiki/display/AST/Codec+Modules). Additionally the [G.729](https://en.wikipedia.org/wiki/G.729) and [G.723.1](https://en.wikipedia.org/wiki/G.723.1) audio codecs has been copied to the image. These are maintained by [arkadijs/asterisk-g72x](https://github.com/arkadijs/asterisk-g72x).
 
-# Container audio
+## Container audio
 
 The `mlan/asterisk` container supports two-way audio using [PulseAudio](https://www.freedesktop.org/wiki/Software/PulseAudio/). This allows you to use the Asterisk console channel to do some management or debugging. The audio stream is passed between the container and host by sharing the user's pulse UNIX socket.
 
@@ -349,7 +328,7 @@ docker compose exec $(SRV_NAME) asterisk -rx 'module load chan_alsa.so'
 
 A limitation of this approach is that you need sudo/root access do be able to bind mount on the host. And, naturally, there needs to be a pulse server running on the host for any of this to work.
 
-## Playing with audio
+### Playing with audio
 
 You can use the [demo](#docker-compose-example) above, and once the container is running, enable audio by typing, from within the `demo` directory:
 
@@ -369,13 +348,31 @@ To disable audio, type:
 make sound_disable
 ```
 
-# Implementation
+# Asterisk Add-ons
+
+The `mlan/asterisk` repository contains add-ons that utilizes and extends the already impressive capabilities of Asterisk.
+
+## [PrivateDial](src/privatedial)
+
+PrivateDial is a suite of [Asterisk configuration files](https://wiki.asterisk.org/wiki/display/AST/Asterisk+Configuration+Files). This configuration is tailored to residential use cases, supporting the capabilities of mobile smart phones, that is, voice, video, instant messaging or SMS, and voice mail delivered by email.
+
+It uses the [PJSIP](https://www.pjsip.org/) [channel driver](https://wiki.asterisk.org/wiki/display/AST/Configuring+res_pjsip) and therefore natively support simultaneous connection of several soft-phones to each user account/endpoint.
+
+The underlying design idea is to separate the dial plan functionality from the user data. To achieve this all user specific data has been pushed out from the main `extensions.conf` file.
+
+## [AutoBan](src/autoban)
+
+AutoBan is an intrusion detection and prevention system which is built-in the `mlan/asterisk` image. The intrusion detection is achieved by Asterisk itself. Asterisk generates security events which AutoBan listens to on the AMI interface. 
+
+When security events occurs AutoBan start to monitor the source IP address. Should repeated security events occur intrusion prevention is activated. Intrusion prevention is achieved by AutoBan asking the Linux kernel firewall [nftables](https://netfilter.org/projects/nftables/) to drop packages from offending source IP addresses.
+
+# Astrisk Implementation
 
 Here some implementation details are presented.
 
 ## Container init scheme
 
-The `mlan/asterisk` container use [runit](http://smarden.org/runit/), providing an init scheme and service supervision, allowing multiple services to be started.
+The Asterisk container uses [runit](http://smarden.org/runit/), providing an init scheme and service supervision, allowing multiple services to be started.
 
 When the container is started, execution is handed over to the script [`docker-entrypoint.sh`](src/docker/bin/docker-entrypoint.sh). It has 4 stages; 0) *register* the SIGTERM [signal (IPC)](https://en.wikipedia.org/wiki/Signal_(IPC)) handler, which is programmed to run all exit scripts in `DOCKER_EXIT_DIR=/etc/docker/exit.d` and terminate all services, 1) *run* all entry scripts in `DOCKER_ENTRY_DIR=/etc/docker/entry.d`, 2) *start* services registered in `/etc/service/`, 3) *wait* forever, allowing the signal handler to catch the SIGTERM and run the exit scripts and terminate all services.
 
