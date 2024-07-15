@@ -35,7 +35,7 @@ services:
     networks:
       - asterisk_net
     volumes:
-      - ../asterisk-AI-bridge:/usr/src/app
+      - ../src/asterisk-AI-bridge:/usr/src/app
     working_dir: /usr/src/app
     command: ["/bin/sh", "-c", "export RTP_SERVER_HOST=$(hostname -i) && npm install && npm start"]
 

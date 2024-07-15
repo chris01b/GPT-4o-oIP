@@ -2,4 +2,5 @@
 local*
 sub/*
 !sub/module
-asterisk-ai-bridge/node_modules/*
+src/asterisk-ai-bridge/node_modules/*
+.DS_Store
