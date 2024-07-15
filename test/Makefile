@@ -3,7 +3,7 @@
 # test
 #
 
--include    *.mk
+-include    ../build/*.mk
 
 TST_REPO ?= mlan/asterisk
 TST_VER  ?= latest

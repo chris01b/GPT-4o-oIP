@@ -1,4 +1,4 @@
--include    *.mk .env .init.env
+-include    ../build/*.mk .env
 
 SRV_NAME ?= tele
 
