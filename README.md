@@ -4,7 +4,24 @@ This repository (will) allow you to dial in/out with a multimodal agent of your 
 
 ## Features
 
-- Asterisk
+<details open>
+  <summary>AI Agent</summary>
+  
+  - [ ] Still waiting on the release of GPT-4o by OpenAI
+  - [ ] Still waiting on the release of Moshi AI by Kyutai
+  - [x] Currently configured to work with [DialogFlow](https://cloud.google.com/dialogflow) ES by Google
+    - Form-based bot builder
+    - Natural language understanding (NLU) models
+    - ~~One-click telephony integration~~ but you're here to run Asterisk locally, right?
+    - Speech recognition and speech synthesis models
+    - [40+ template agents](https://cloud.google.com/dialogflow/es/docs/agents-prebuilt) for building conversations for dining out, hotel booking, navigation, IoT, and more
+    - Integration into popular channels, such as Google Assistant, Slack, Twitter, and others
+    - Performance and custom dashboards
+</details>
+
+<details>
+  <summary>Asterisk</summary>
+  
   - [Asterisk](http://www.asterisk.org/) powering IP PBX systems and VoIP gateways
   - [PrivateDial Lite](src/privatedial), customizable Asterisk configuration based on [mlan](https://github.com/mlan)'s [PrivateDial](https://github.com/mlan/docker-asterisk/tree/master/src/privatedial)
   - [AutoBan](src/autoban), a built in intrusion detection and prevention system
@@ -18,21 +35,22 @@ This repository (will) allow you to dial in/out with a multimodal agent of your 
   - Health check
   - Log directed to docker daemon with configurable level
   - Multi-staged build providing the images `mini`, `base`, `full` and `xtra`
-- AI Agent
-  - [ ] Still waiting on the release of GPT-4o by OpenAI
-  - [ ] Still waiting on the release of Moshi AI by Kyutai
-  - [x] Currently configured to work with [DialogFlow](https://cloud.google.com/dialogflow) ES by Google
-    - Form-based bot builder
-    - ~~One-click telephony integration~~ but you're here to run Asterisk locally, right?
-    - Natural language understanding (NLU) models
-    - Speech recognition and speech synthesis models
-    - [40+ template agents](https://cloud.google.com/dialogflow/es/docs/agents-prebuilt) for building conversations for dining out, hotel booking, navigation, IoT, and more
-    - Integration into popular channels, such as Google Assistant, Slack, Twitter, and others
-    - Performance and custom dashboards
+</details>
 
 # Usage
 
-WIP: Still configuring
+Build the `chris01b/asterisk` docker image
+```bash
+cd build
+make build
+```
+
+Compose `chris01b/asterisk` and `asterisk-ai-bridge`
+```bash
+cd .. # back to GPT-4o-oIP
+cd compose
+make init
+```
 
 # Asterisk AI Bridge Configuration
 
