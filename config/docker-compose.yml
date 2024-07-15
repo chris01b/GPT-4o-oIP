@@ -31,7 +31,7 @@ services:
   
   asterisk-ai-bridge:
     image: node:18.20.2
-    container_name: asterisk-AI-bridge
+    container_name: asterisk-ai-bridge
     networks:
       - asterisk_net
     volumes:
