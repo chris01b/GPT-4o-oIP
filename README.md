@@ -63,7 +63,7 @@ version: '3'
 
 services:
   tele:
-    image: mlan/asterisk
+    image: chris01b/asterisk
     network_mode: bridge                    # Only here to help testing
     cap_add:
       - sys_ptrace                          # Only here to help testing
@@ -116,7 +116,7 @@ make destroy
 
 ## Environment variables
 
-Despite the fact that Asterisk is configured using configuration files, there is a handful of environmental variables that controls the behavior of services within the `mlan/asterisk` container. These services are logging and the management of TLS certificates.
+Despite the fact that Asterisk is configured using configuration files, there is a handful of environmental variables that controls the behavior of services within the `chris01b/asterisk` container. These services are logging and the management of TLS certificates.
 
 | Variable                                  | Default         | Description                                                  |
 | ----------------------------------------- | --------------- | ------------------------------------------------------------ |
@@ -129,7 +129,7 @@ Despite the fact that Asterisk is configured using configuration files, there is
 
 ## Configuration files
 
-Asterisk and its modules are configured using several configuration files which are typically found in `/etc/asterisk`. The `/mlan/asterisk` image includes a collection of sample configuration files which can serve as starting point for your system.
+Asterisk and its modules are configured using several configuration files which are typically found in `/etc/asterisk`. The `/chris01b/asterisk` image includes a collection of sample configuration files which can serve as starting point for your system.
 
 Some of the configuration files provided does not contain any user specific data and might initially be left unmodified. These files are:
 
@@ -160,14 +160,14 @@ To facilitate such approach, to achieve persistent storage, the configuration an
 The volume `tele-conf` in the [demo](#docker-compose-example), which uses `docker compose`, described above, achieves this. Mounting a volume using the docker CLI, can look like this:
 
 ```
-docker run -d -v tele-conf:/srv ... mlan/asterisk
+docker run -d -v tele-conf:/srv ... chris01b/asterisk
 ```
 
 ## Seeding procedure
 
 The Asterisk image contains sample configuration files placed in a seeding directory. The actual configuration directory is empty. When the container starts, the configuration directory, `etc/asterisk` , is scanned. If it is found to be empty, sample configuration files from the seeding directory are copied to the configuration directory.
 
-The seeding procedure will leave any existing configuration untouched. If configuration files are found, nothing is copied or modified during start up. Only when `etc/asterisk` is found to be empty, will seeding files be copied. This behavior should keep your conflagration safe also when upgrading to a new version of the `mlan/asterisk` image. Should a new version of the `mlan/asterisk` image come with interesting updates to any sample configuration files, it needs to manually be copied or merged with the present configuration files.
+The seeding procedure will leave any existing configuration untouched. If configuration files are found, nothing is copied or modified during start up. Only when `etc/asterisk` is found to be empty, will seeding files be copied. This behavior should keep your conflagration safe also when upgrading to a new version of the `chris01b/asterisk` image. Should a new version of the `chris01b/asterisk` image come with interesting updates to any sample configuration files, it needs to manually be copied or merged with the present configuration files.
 
 ## Logging `SYSLOG_LEVEL`
 
@@ -216,7 +216,7 @@ rtpend   = 10099
 
 ### Network address translation (NAT)
 
-[Network address translation (NAT)](https://en.wikipedia.org/wiki/Network_address_translation) is a method of remapping one IP [address space](https://en.wikipedia.org/wiki/Address_space) into another by modifying the [network address](https://en.wikipedia.org/wiki/Network_address) information in the [IP header](https://en.wikipedia.org/wiki/IP_header) of packets while they are in transit across a traffic [routing device](https://en.wikipedia.org/wiki/Router_(computing)). Network environments often results in NAT being used. On the one hand, the SIP server we deploy using `mlan/asterisk` often uses a Docker [bridge network](https://docs.docker.com/network/bridge/), connecting Dockers local network with the one the host is connected to. On the other, SIP clients running on mobile phones often end up connect to remote local networks.
+[Network address translation (NAT)](https://en.wikipedia.org/wiki/Network_address_translation) is a method of remapping one IP [address space](https://en.wikipedia.org/wiki/Address_space) into another by modifying the [network address](https://en.wikipedia.org/wiki/Network_address) information in the [IP header](https://en.wikipedia.org/wiki/IP_header) of packets while they are in transit across a traffic [routing device](https://en.wikipedia.org/wiki/Router_(computing)). Network environments often results in NAT being used. On the one hand, the SIP server we deploy using `chris01b/asterisk` often uses a Docker [bridge network](https://docs.docker.com/network/bridge/), connecting Dockers local network with the one the host is connected to. On the other, SIP clients running on mobile phones often end up connect to remote local networks.
 
 #### SIP server address
 
@@ -270,18 +270,18 @@ The private key length and self-signed certificate validity duration can be conf
 
 [Let’s Encrypt](https://letsencrypt.org/) provide free, automated, authorized certificates when you can demonstrate control over your domain. Automatic Certificate Management Environment (ACME) is the protocol used for such demonstration.
 
-There are many agents and applications that supports ACME, e.g., [certbot](https://certbot.eff.org/). The reverse proxy [Traefik](https://docs.traefik.io/) also supports ACME. `mlan/asterisk` can use the TLS certificates Traefik has acquired.
+There are many agents and applications that supports ACME, e.g., [certbot](https://certbot.eff.org/). The reverse proxy [Traefik](https://docs.traefik.io/) also supports ACME. `chris01b/asterisk` can use the TLS certificates Traefik has acquired.
 
 ##### `ACME_FILE`, `ACME_POSTHOOK`
 
-The `mlan/asterisk` image looks for the file `ACME_FILE=/acme/acme.json` at container startup. If it is found certificates within this file are extracted. If the host or domain name of one of those certificates matches `HOSTNAME=$(hostname)` or `DOMAIN=${HOSTNAME#*.}` it will be used by the TLS transport. Moreover, the `ACME_FILE` will be monitored and should it change the certificates will be exported anew. So when Traefik renews its certificates Asterisk will automatically also have access to the new certificate.
+The `chris01b/asterisk` image looks for the file `ACME_FILE=/acme/acme.json` at container startup. If it is found certificates within this file are extracted. If the host or domain name of one of those certificates matches `HOSTNAME=$(hostname)` or `DOMAIN=${HOSTNAME#*.}` it will be used by the TLS transport. Moreover, the `ACME_FILE` will be monitored and should it change the certificates will be exported anew. So when Traefik renews its certificates Asterisk will automatically also have access to the new certificate.
 
 Once the certificates and keys have been updated, we run the command in the environment variable `ACME_POSTHOOK="sv restart asterisk"`. Asterisk needs to be restarted to reload the transport, i.e., TLS parameters to be updated. If automatic restarting of Asterisk is not desired, set `ACME_POSTHOOK=` to empty.
 
-Using Traefik's certificates will work "out of the box" simply by making sure that the `/acme` directory in the Traefik container is also is mounted in the `mlan/asterisk` container.
+Using Traefik's certificates will work "out of the box" simply by making sure that the `/acme` directory in the Traefik container is also is mounted in the `chris01b/asterisk` container.
 
 ```bash
-docker run -d -v proxy-acme:/acme:ro mlan/asterisk
+docker run -d -v proxy-acme:/acme:ro chris01b/asterisk
 ```
 
 Note, if the target certificate Common Name (CN) or Subject Alternate Name (SAN) is changed the container needs to be restarted.
@@ -307,7 +307,7 @@ Asterisk natively provides several audio and video [codec modules](https://wiki.
 
 ## Container audio
 
-The `mlan/asterisk` container supports two-way audio using [PulseAudio](https://www.freedesktop.org/wiki/Software/PulseAudio/). This allows you to use the Asterisk console channel to do some management or debugging. The audio stream is passed between the container and host by sharing the user's pulse UNIX socket.
+The `chris01b/asterisk` container supports two-way audio using [PulseAudio](https://www.freedesktop.org/wiki/Software/PulseAudio/). This allows you to use the Asterisk console channel to do some management or debugging. The audio stream is passed between the container and host by sharing the user's pulse UNIX socket.
 
 The method described here was chosen since it allows audio to be enabled on an already running container. The method involves a directory `./pulse:/run/pulse:rshared` on the host being mounted in the container, see the [compose example](#docker-compose-example), and environment variables being set within the container, allowing pulse to locate the socket; `PULSE_SERVER=unix:/run/pulse/socket` and cookie; `PULSE_COOKIE=/run/pulse/cookie`. To arrange the pulse directory on the host, from a shell, run:
 
@@ -348,7 +348,7 @@ make sound_disable
 
 # Asterisk Add-ons
 
-The `mlan/asterisk` repository contains add-ons that utilizes and extends the already impressive capabilities of Asterisk.
+The `chris01b/asterisk` repository contains add-ons that utilizes and extends the already impressive capabilities of Asterisk.
 
 ## [PrivateDial](src/privatedial)
 
@@ -360,7 +360,7 @@ The underlying design idea is to separate the dial plan functionality from the u
 
 ## [AutoBan](src/autoban)
 
-AutoBan is an intrusion detection and prevention system which is built-in the `mlan/asterisk` image. The intrusion detection is achieved by Asterisk itself. Asterisk generates security events which AutoBan listens to on the AMI interface. 
+AutoBan is an intrusion detection and prevention system which is built-in the `chris01b/asterisk` image. The intrusion detection is achieved by Asterisk itself. Asterisk generates security events which AutoBan listens to on the AMI interface. 
 
 When security events occurs AutoBan start to monitor the source IP address. Should repeated security events occur intrusion prevention is activated. Intrusion prevention is achieved by AutoBan asking the Linux kernel firewall [nftables](https://netfilter.org/projects/nftables/) to drop packages from offending source IP addresses.
 
