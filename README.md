@@ -50,7 +50,7 @@ one number versions numbers, which refers to the latest version of the
 sub series. The tag `latest` references the build based on the latest commit to the repository.
 
 The repository contains a multi staged build. You select which build using the appropriate tag from `mini`, `base`, `full` and `xtra`. The image with the tag `mini` only contains Asterisk itself.
-The `base` tag also include support for TLS, logging, WebSMS and AutoBan. `full` adds support for console audio. The `xtra` tag includes all Asterisk packages.
+The `base` tag also include support for TLS, logging, and AutoBan. `full` adds support for console audio. The `xtra` tag includes all Asterisk packages.
 
  To exemplify the usage of the tags, lets assume that the latest version is `1.0.0`. In this case `latest`, `1.0.0`, `1.0`, `1`, `full`, `full-1.0.0`, `full-1.0` and `full-1` all identify the same image.
 
@@ -70,7 +70,6 @@ services:
       - net_admin                           # Allow NFT, used by AutoBan
       - net_raw                             # Allow NFT, used by AutoBan
     ports:
-      - "${SMS_PORT-8080}:${WEBSMSD_PORT:-80}" # WEBSMSD port mapping
       - "5060:5060/udp"                     # SIP UDP port
       - "5060:5060"                         # SIP TCP port
       - "5061:5061"                         # SIP TLS port
@@ -80,7 +79,6 @@ services:
       - HOSTNAME=${TELE_SRV-tele}.${DOMAIN-docker.localhost}
       - PULSE_SERVER=unix:/run/pulse/socket # Use host audio
       - PULSE_COOKIE=/run/pulse/cookie      # Use host audio
-      - WEBSMSD_PORT=${WEBSMSD_PORT-80}     # WEBSMSD internal port
     volumes:
       - tele-conf:/srv                      # Persistent storage
       - ./pulse:/run/pulse:rshared          # Use host audio
@@ -118,7 +116,7 @@ make destroy
 
 ## Environment variables
 
-Despite the fact that Asterisk is configured using configuration files, there is a handful of environmental variables that controls the behavior of services within the `mlan/asterisk` container. These services are logging, the management of TLS certificates, and the WebSMS add-on.
+Despite the fact that Asterisk is configured using configuration files, there is a handful of environmental variables that controls the behavior of services within the `mlan/asterisk` container. These services are logging and the management of TLS certificates.
 
 | Variable                                  | Default         | Description                                                  |
 | ----------------------------------------- | --------------- | ------------------------------------------------------------ |
@@ -354,7 +352,7 @@ The `mlan/asterisk` repository contains add-ons that utilizes and extends the al
 
 ## [PrivateDial](src/privatedial)
 
-PrivateDial is a suite of [Asterisk configuration files](https://wiki.asterisk.org/wiki/display/AST/Asterisk+Configuration+Files). This configuration is tailored to residential use cases, supporting the capabilities of mobile smart phones, that is, voice, video, instant messaging or SMS, and voice mail delivered by email.
+PrivateDial is a suite of [Asterisk configuration files](https://wiki.asterisk.org/wiki/display/AST/Asterisk+Configuration+Files). This configuration is tailored to residential use cases, supporting the capabilities of mobile smart phones, that is, voice, video, and voice mail delivered by email.
 
 It uses the [PJSIP](https://www.pjsip.org/) [channel driver](https://wiki.asterisk.org/wiki/display/AST/Configuring+res_pjsip) and therefore natively support simultaneous connection of several soft-phones to each user account/endpoint.
 
