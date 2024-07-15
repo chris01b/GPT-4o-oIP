@@ -5,8 +5,8 @@ networks:
     driver: bridge
 
 services:
-  tele:
-    image: chris01b/gpt-4o-oip:full
+  asterisk:
+    image: chris01b/asterisk:full
     cap_add:
       - sys_ptrace                          # Only here to help testing
       - net_admin                           # Allow NFT, used by AutoBan
@@ -19,7 +19,7 @@ services:
       - "10000-10099:10000-10099/udp"       # RTP ports
     environment:
       - SYSLOG_LEVEL=${SYSLOG_LEVEL-4}      # Logging
-      - HOSTNAME=${TELE_SRV-tele}.${DOMAIN-docker.localhost}
+      - HOSTNAME=${TELE_SRV-asterisk}.${DOMAIN-docker.localhost}
       - PULSE_SERVER=unix:/run/pulse/socket # Use host audio
       - PULSE_COOKIE=/run/pulse/cookie      # Use host audio
     volumes:
@@ -29,13 +29,13 @@ services:
     networks:
       - asterisk_net
   
-  asterisk-AI-bridge:
+  asterisk-ai-bridge:
     image: node:18.20.2
     container_name: asterisk-AI-bridge
     networks:
       - asterisk_net
     volumes:
-      - ../src/asterisk-AI-bridge:/usr/src/app
+      - ../src/asterisk-ai-bridge:/usr/src/app
     working_dir: /usr/src/app
     command: ["/bin/sh", "-c", "export RTP_SERVER_HOST=$(hostname -i) && npm install && npm start"]
 

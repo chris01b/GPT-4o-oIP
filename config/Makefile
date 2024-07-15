@@ -1,6 +1,6 @@
 -include    ../build/*.mk .env
 
-SRV_NAME ?= tele
+SRV_NAME ?= asterisk
 
 CNT_CLI  ?= asterisk -rvvvddd
 
