@@ -45,7 +45,7 @@ COPY	../src/asterisk-configs/*/bin $DOCKER_BIN_DIR/
 COPY	../src/asterisk-configs/*/entry.d $DOCKER_ENTRY_DIR/
 COPY	../src/asterisk-configs/*/exit.d $DOCKER_EXIT_DIR/
 COPY	../src/asterisk-configs/*/php $DOCKER_PHP_DIR/
-COPY	../sub/*/php $DOCKER_PHP_DIR/
+COPY	../src/sub/*/php $DOCKER_PHP_DIR/
 COPY	../src/asterisk-configs/*/config $DOCKER_SEED_CONF_DIR/
 COPY	../src/asterisk-configs/*/nft $DOCKER_SEED_NFT_DIR/
 
@@ -142,7 +142,7 @@ FROM	base AS full
 # Copy patent-encumbered codecs to image
 #
 
-COPY	../sub/*/module $DOCKER_DL_DIR/
+COPY	../src/sub/*/module $DOCKER_DL_DIR/
 
 #
 # Install packages supporting audio

@@ -45,26 +45,26 @@ build_%: pre_build
 pre_build: Dockerfile pre_autoban pre_codecs
 	
 
-pre_autoban: ../sub/autoban/php/ami.class.inc
+pre_autoban: ../src/sub/autoban/php/ami.class.inc
 	
 
 pre_codecs: codec_g723.so codec_g729.so
 	
 
-../sub/autoban/php/ami.class.inc: submodule
+../src/sub/autoban/php/ami.class.inc: submodule
 	mkdir -p $(@D)
-	cp --remove-destination ../sub/module/phpami/src/Ami.php $@
+	cp --remove-destination ../src/sub/module/phpami/src/Ami.php $@
 
 submodule:
 	git submodule update --init --recursive
 
-codec_%.so: ../sub/codecs/download/codec_%-$(BLD_CVER).so
-	mkdir -p ../sub/codecs/module
-	cp --remove-destination $< ../sub/codecs/module/$@
+codec_%.so: ../src/sub/codecs/download/codec_%-$(BLD_CVER).so
+	mkdir -p ../src/sub/codecs/module
+	cp --remove-destination $< ../src/sub/codecs/module/$@
 
-.PRECIOUS: ../sub/codecs/download/%.so
+.PRECIOUS: ../src/sub/codecs/download/%.so
 
-../sub/codecs/download/%.so:
+../src/sub/codecs/download/%.so:
 	mkdir -p $(@D)
 	$(BLD_DNLD) $@ http://asterisk.hosting.lv/bin/$*-gcc4-glibc-x86_64-core2.so
 	chmod 0755 $@

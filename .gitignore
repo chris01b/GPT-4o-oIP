@@ -1,6 +1,6 @@
 *private
 local*
-sub/*
-!sub/module
+src/sub/*
+!src/sub/module
 src/asterisk-ai-bridge/node_modules/*
 .DS_Store
