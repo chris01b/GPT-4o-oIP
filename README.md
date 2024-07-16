@@ -54,7 +54,93 @@ make init
 
 # Asterisk AI Bridge Configuration
 
-WIP: Still configuring
+Necessary keys to configure: `keyFilename`, `project`, `initialEventName`
+
+In `src/asterisk-ai-bridge/config/default.cjs`
+
+ARI Config
+
+```js
+{
+    url: 'http://asterisk:8088',
+    username: 'username',
+    password: 'foo',
+    appName: 'asterisk-ai-bridge'
+}
+```
+
+This configuration is the default login configured in `ari.conf`. `asterisk`, from the service in `docker-compose.yml`, resolves to the Asterisk container's IP address. The bind port `8088` is configured in `http.conf`. The app name is the Stasis application's name.
+
+RTP Server Config
+
+```js
+{
+    host: process.env.RTP_SERVER_HOST,
+    port: '7777',
+    format: 'slin16',
+    swap16: true
+}
+```
+
+The host is the asterisk-ai-bridge's ip address. It is sent to Asterisk but Asterisk will not resolve the name so we initialize this environment variable in `docker-compose.yml`. `format` is the audio codec from DialogFlow. DialogFlow gives the audio back as little endian which we manually swap to big endian.
+
+MQTT Config
+
+```js
+mqtt: {
+    url: 'mqtt://test.mosquitto.org',
+    topicPrefix: 'asterisk-ai'
+}
+```
+
+By default, we use a publicly available Eclipse Mosquitto MQTT server/broker. Please don't publish anything sensitive to it because anybody could be listening. You will want to run your own in a proper deployment.
+
+Asterisk Config
+
+```js
+{
+      format: 'slin16',
+      audioByteSize: 320,
+      packetTimestampIncrement: 160,
+      rtpPayloadType: 11,
+      playback: 'hello-world'
+  }
+```
+
+`format` is the codec we send the DialogFlow audio to Asterisk with. The other keys are for sending the the RTP stream to Asterisk. You should not edit them unless you know what you are doing. `playback` is a default audio file stored on Asterisk which is played first upon connecting to the Stasis application. It is enabled by default for debugging purposes.
+
+DialogFlow ES Config
+
+```js
+{
+    auth: {
+        keyFilename: '',
+    },
+    project: '',
+    initialEventName: '',
+    enableOutputSpeech: true,
+    audioInputConfig: {
+        audioEncoding: 'AUDIO_ENCODING_LINEAR_16',
+        sampleRateHertz: 16000,
+        languageCode: 'en',
+        singleUtterance: false
+    },
+    audioOutputConfig: {
+        audioEncoding: 'OUTPUT_AUDIO_ENCODING_LINEAR_16',
+        sampleRateHertz: 8000,
+        synthesizeSpeechConfig: {
+            speakingRate: 1,
+            pitch: 5,
+            volumeGainDb: 0,
+            voice: {
+                ssmlGender: 'SSML_VOICE_GENDER_FEMALE'
+            }
+        }
+    }
+}
+```
+
+In order to authenticate with DialogFlow, create a service account in Google Cloud IAM with permission for DialogFlow and save the key file as JSON. If you place it in `asterisk-ai-bridge`, you can just input its file name. `project` is the Google Cloud Platform project ID. `initialEventName` is the event for the flow's default intent which is manually triggered upon connecting to the Stasis application. Further intents can be configured in DialogFlow to be detected from speech. Only DialogFlow ES supports built-in speech output. `enableOutputSpeech` sets this. DialogFlow CX is also supported. The `audioEncoding` keys translate to the `slin16` codec with some manual manipulation. More details can be found [here](https://cloud.google.com/dialogflow/es/docs/reference/rest/v2/projects.agent.environments#outputaudioencoding).
 
 # Asterisk Configuration
 
