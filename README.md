@@ -146,6 +146,8 @@ In order to authenticate with DialogFlow, create a service account in Google Clo
 
 There are many things to consider when configuring Asterisk and its components. We discuss some fundamentals here and in the separate documentation for the [add-ons](#add-ons).
 
+The only necessary setting you must configure to get the project running is `external_signaling_address` and `external_media_address` in `pjsip_transport.conf` which should be set to the host machine's local IP address.
+
 ## Tags
 
 The MAJOR.MINOR.PATCH [SemVer](https://semver.org/)
