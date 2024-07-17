@@ -12,21 +12,14 @@
         "async-mqtt": "^2.4.2",
         "config": "^3.2.4",
         "dgram-as-promised": "^3.0.3",
+        "dialogflow": "^1.1.2",
         "krtp": "^3.0.0",
         "mqtt": "^3.0.0",
-        "pino": "^5.14.0",
-        "dialogflow": "^1.1.2"
+        "pino": "^5.14.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.24.7",
-        "@babel/preset-env": "^7.24.7",
-        "babel-jest": "^29.7.0",
         "cross-env": "^7.0.3",
-        "jest": "^29.7.0",
-        "nock": "^13.5.4",
-        "pino-pretty": "^3.4.0",
-        "sinon": "^18.0.0",
-        "supertest": "^7.0.0"
+        "pino-pretty": "^3.4.0"
     },
     "scripts": {
         "start": "node index.js",
